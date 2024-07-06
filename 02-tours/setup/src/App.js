@@ -13,7 +13,7 @@ function App() {
         setTours(prevTours => prevTours.filter(item => item.id != id));
     }
 
-    useEffect(() => {
+    const fetchTours = () => {
         fetch(url)
             .then((response)=>response.json())
             .then((data) => {
@@ -22,11 +22,23 @@ function App() {
             })
             .catch(err => console.log(err));
         console.log(url);
+    }
+
+    useEffect(() => {
+        fetchTours();
     }, [])
 
     if (loading) return <Loading />;
-
-    else return <Tours tours={tours} removeTour={removeTour}/>;
+    else if (tours.length == 0) {
+        return (<main className='title'>
+                <h2>No Tours Left!</h2>
+                <button className='btn' onClick={fetchTours}>Refresh</button>
+            </main>)
+    }
+    else return (
+        <main>
+            <Tours tours={tours} removeTour={removeTour}/>;
+        </main>);
 }
 
 export default App
